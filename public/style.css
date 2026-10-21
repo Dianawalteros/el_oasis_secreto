@@ -1103,22 +1103,6 @@ body {
   background: rgba(255, 255, 255, 0.3);
 }
 /* Ajustes extra para celulares muy pequeños */
-@media (max-width: 360px) {
-    .tablero {
-        grid-template-columns: repeat(6, 1fr);
-        gap: 5px;
-    }
-    .ticket {
-        font-size: 0.75rem;
-    }
-    .header-title {
-        font-size: 0.9rem;
-    }
-    .nav-btn {
-        padding: 5px 10px;
-        font-size: 0.7rem;
-    }
-}
 @media (max-width: 480px) {
     .tablero {
         grid-template-columns: repeat(7, 1fr);
