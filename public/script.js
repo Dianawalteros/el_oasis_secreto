@@ -25,7 +25,7 @@ let registros = {};
 let numActual = null;
 
 // Credenciales Admin
-const ADMIN_USER = "diana";
+const ADMIN_USER = "Diana";
 const ADMIN_PASS = "8521"; 
 
 /* ============================================================
@@ -247,8 +247,14 @@ function cargarAdmin() {
             btnAcc = `<button class="btn-aprobar" onclick="aprobar(${num})" title="Aprobar">✓</button>` + btnAcc;
         }
         
-        tr.innerHTML = `<td><strong>${String(num).padStart(2,'0')}</strong></td><td>${r.nombre}</td><td>${r.telefono}</td><td>${estado}</td><td>${btnVer}</td><td>${btnAcc}</td>`;
-        tbody.appendChild(tr);
+        tr.innerHTML = `
+    <td data-label="#"><strong>${String(num).padStart(2,'0')}</strong></td>
+    <td data-label="NOMBRE">${r.nombre}</td>
+    <td data-label="TELÉFONO">${r.telefono}</td>
+    <td data-label="ESTADO">${estado}</td>
+    <td data-label="COMPROBANTE">${btnVer}</td>
+    <td data-label="ACCIONES">${btnAcc}</td>
+`;
     });
 }
 

@@ -1627,3 +1627,101 @@ TÍTULO CON EMOJI A COLOR + TEXTO CON GRADIENTE
         font-size: 1.5rem !important;
     }
 }
+/* ============================================================
+TABLA ADMIN RESPONSIVE PARA MÓVILES
+============================================================ */
+
+/* Contenedor con scroll horizontal en móviles */
+@media (max-width: 768px) {
+    .admin-table-wrapper {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        border-radius: 16px;
+    }
+    
+    .admin-table {
+        min-width: 700px; /* Fuerza el ancho mínimo para que no se comprima */
+    }
+    
+    .admin-table th,
+    .admin-table td {
+        padding: 10px 12px;
+        font-size: 0.85rem;
+        white-space: nowrap; /* Evita que el texto se parta */
+    }
+    
+    /* Indicador visual de scroll */
+    .admin-table-wrapper::after {
+        content: '← Desliza para ver más →';
+        display: block;
+        text-align: center;
+        padding: 8px;
+        font-size: 0.75rem;
+        color: rgba(240, 244, 243, 0.5);
+        background: rgba(0, 0, 0, 0.1);
+    }
+}
+
+/* En pantallas muy pequeñas, mostrar como cards */
+@media (max-width: 480px) {
+    .admin-table-wrapper {
+        background: transparent;
+        border: none;
+    }
+    
+    .admin-table,
+    .admin-table thead,
+    .admin-table tbody,
+    .admin-table th,
+    .admin-table td,
+    .admin-table tr {
+        display: block;
+    }
+    
+    .admin-table thead {
+        display: none; /* Oculta los encabezados */
+    }
+    
+    .admin-table tr {
+        background: var(--glass-bg);
+        backdrop-filter: blur(8px);
+        border: 1px solid var(--glass-border);
+        border-radius: 16px;
+        padding: 16px;
+        margin-bottom: 12px;
+        position: relative;
+    }
+    
+    .admin-table td {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 0;
+        border: none;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        text-align: right;
+    }
+    
+    .admin-table td:last-child {
+        border-bottom: none;
+        justify-content: flex-end;
+        gap: 8px;
+        margin-top: 8px;
+    }
+    
+    /* Etiquetas para cada campo */
+    .admin-table td::before {
+        content: attr(data-label);
+        font-weight: 700;
+        color: rgba(240, 244, 243, 0.7);
+        text-align: left;
+        margin-right: 12px;
+        font-size: 0.8rem;
+    }
+    
+    .admin-table td:first-child {
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: var(--accent-yellow);
+    }
+}
