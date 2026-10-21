@@ -247,7 +247,7 @@ function cargarAdmin() {
             btnAcc = `<button class="btn-aprobar" onclick="aprobar(${num})" title="Aprobar">✓</button>` + btnAcc;
         }
         
-        tr.innerHTML = `
+       tr.innerHTML = `
     <td data-label="#"><strong>${String(num).padStart(2,'0')}</strong></td>
     <td data-label="NOMBRE">${r.nombre}</td>
     <td data-label="TELÉFONO">${r.telefono}</td>

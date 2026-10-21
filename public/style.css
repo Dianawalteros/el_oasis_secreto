@@ -1119,6 +1119,101 @@ body {
         font-size: 0.7rem;
     }
 }
+@media (max-width: 480px) {
+    .tablero {
+        grid-template-columns: repeat(7, 1fr);
+    }
+    .bottom-panel {
+        flex-direction: column;
+        gap: 10px;
+    }
+    .stats-bar {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    .winner-input-group {
+        width: 100%;
+        justify-content: center;
+    }
+    .header-title {
+        font-size: 1rem;
+    }
+    .nav-btn {
+        padding: 6px 12px;
+        font-size: 0.75rem;
+    }
+    
+    /* TABLA ADMIN EN MÓVIL - FORMATO CARDS */
+    .admin-table-wrapper {
+        background: transparent;
+        border: none;
+        overflow: visible;
+    }
+    
+    .admin-table,
+    .admin-table thead,
+    .admin-table tbody,
+    .admin-table th,
+    .admin-table td,
+    .admin-table tr {
+        display: block;
+    }
+    
+    .admin-table thead {
+        display: none;
+    }
+    
+    .admin-table tr {
+        background: var(--glass-bg);
+        backdrop-filter: blur(8px);
+        border: 1px solid var(--glass-border);
+        border-radius: 16px;
+        padding: 16px;
+        margin-bottom: 12px;
+    }
+    
+    .admin-table td {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 0;
+        border: none;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        text-align: right;
+        font-size: 0.9rem;
+    }
+    
+    .admin-table td:last-child {
+        border-bottom: none;
+        justify-content: flex-end;
+        gap: 8px;
+        margin-top: 8px;
+    }
+    
+    .admin-table td::before {
+        content: attr(data-label);
+        font-weight: 700;
+        color: rgba(240, 244, 243, 0.7);
+        text-align: left;
+        margin-right: 12px;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    .admin-table td:first-child {
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: var(--accent-yellow);
+        justify-content: center;
+        padding-bottom: 12px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .admin-table td:first-child::before {
+        content: 'NÚMERO';
+    }
+}
 /* ============================================================
 ANIMACIONES DE TEXTO
 ============================================================ */
