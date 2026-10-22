@@ -336,7 +336,25 @@ function toastMsg(msg, tipo) {
     toast.style.background = tipo === 'error' ? '#dc3545' : tipo === 'success' ? '#28a745' : '#5D3A1A';
     setTimeout(() => toast.classList.remove('is-visible'), 3000);
 }
+/* ============================================================
+MODAL VER PREMIO
+============================================================ */
+function abrirModalPremio() {
+    const modal = document.getElementById('modal-premio');
+    if (modal) {
+        modal.classList.add('is-open');
+    }
+}
 
+// Cerrar modal de premio al hacer clic fuera
+const modalPremio = document.getElementById('modal-premio');
+if (modalPremio) {
+    modalPremio.onclick = (e) => {
+        if (e.target.id === 'modal-premio') {
+            cerrarModal('modal-premio');
+        }
+    };
+}
 // Cerrar modales al hacer clic fuera
 ['modal-apartar', 'modal-pago', 'modal-comp', 'modal-login'].forEach(id => {
     const el = document.getElementById(id);

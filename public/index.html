@@ -78,10 +78,15 @@ APP CONTAINER
                 🎰 El número ganador serán los últimos 2 dígitos del premio mayor de la Lotería de Boyacá
             </p>
         </div>
+        <div style="margin-bottom:24px;">
+    <button class="btn-ver-premio" onclick="abrirModalPremio()">
+        ✨ ¿Quieres ver qué te puedes ganar?
+    </button>
+</div>
 
-        <button class="btn-submit" style="max-width:320px; margin:0 auto;" onclick="cambiarPantalla('tablero')">
-            💰 Ver el Oasis Secreto →
-        </button>
+<button class="btn-submit" style="max-width:320px; margin:0 auto;" onclick="cambiarPantalla('tablero')">
+    💰 Ver el Oasis Secreto →
+</button>
     </div>
 </section>
 
@@ -276,7 +281,51 @@ TOAST
 <div class="toast" id="toast">
     <span id="toast-text"></span>
 </div>
+<!-- MODAL: VER PREMIO -->
+<div class="modal-overlay" id="modal-premio">
+    <div class="modal-content modal-premio-content">
+        <button class="modal-close" onclick="cerrarModal('modal-premio')">✕</button>
+        <div class="premio-header">
+            <h2 class="premio-titulo">🎁 Este es tu premio</h2>
+            <p class="premio-subtitulo">Una tarde de spa inolvidable para dos</p>
+        </div>
+        
+        <div class="premio-galeria">
+            <div class="premio-img-container">
+                <img src="https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=600" alt="Masaje relajante" class="premio-img">
+                <div class="premio-badge">💆 Masaje para dos</div>
+            </div>
+            <div class="premio-img-container">
+                <img src="https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=600" alt="Spa relajante" class="premio-img">
+                <div class="premio-badge">🌸 Ambiente relajante</div>
+            </div>
+            <div class="premio-img-container">
+                <img src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=600" alt="Tratamiento facial" class="premio-img">
+                <div class="premio-badge">✨ Tratamiento facial</div>
+            </div>
+        </div>
 
+        <div class="premio-detalles">
+            <h3>¿Qué incluye?</h3>
+            <ul class="premio-lista">
+                <li>💆 Masaje relajante para dos personas</li>
+                <li>🌿 Aromaterapia con aceites esenciales</li>
+                <li>🍵 Té de hierbas y frutas frescas</li>
+                <li>🧖 Acceso a sauna y jacuzzi</li>
+                <li>⏰ 2 horas de relax total</li>
+            </ul>
+        </div>
+
+        <div class="premio-valor">
+            <span class="premio-valor-label">Valor real:</span>
+            <span class="premio-valor-precio">$150.000 COP</span>
+        </div>
+
+        <button class="btn-submit" onclick="cerrarModal('modal-premio'); cambiarPantalla('tablero');">
+            ️ ¡Quiero participar!
+        </button>
+    </div>
+</div>
 <!-- ============================================================
 SCRIPT
 ============================================================ -->
