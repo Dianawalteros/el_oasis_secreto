@@ -1909,3 +1909,123 @@ MODAL PREMIO
         padding: 12px 24px;
     }
 }
+/* ============================================================
+SELLO ANIMADO
+============================================================ */
+.sello-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 40px;
+    animation: selloEntrada 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55) both;
+    animation-delay: 0.5s;
+}
+
+.sello {
+    position: relative;
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 12px 24px;
+    border: 3px solid var(--accent-yellow);
+    border-radius: 8px;
+    background: rgba(240, 192, 64, 0.1);
+    backdrop-filter: blur(4px);
+    transform: rotate(-3deg);
+    box-shadow: 
+        0 4px 15px rgba(240, 192, 64, 0.3),
+        inset 0 0 20px rgba(240, 192, 64, 0.1);
+    overflow: hidden;
+}
+
+/* Efecto de textura de sello */
+.sello::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: 
+        repeating-linear-gradient(
+            45deg,
+            transparent,
+            transparent 2px,
+            rgba(240, 192, 64, 0.05) 2px,
+            rgba(240, 192, 64, 0.05) 4px
+        );
+    pointer-events: none;
+}
+
+.sello-texto {
+    font-family: 'Playfair Display', serif;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--accent-yellow);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    position: relative;
+    z-index: 1;
+}
+
+.sello-texto:first-child {
+    font-size: 0.85rem;
+    letter-spacing: 1.5px;
+}
+
+/* Animación de entrada del sello */
+@keyframes selloEntrada {
+    0% {
+        opacity: 0;
+        transform: scale(2) rotate(-15deg);
+    }
+    50% {
+        opacity: 0.5;
+        transform: scale(0.9) rotate(-5deg);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1) rotate(-3deg);
+    }
+}
+
+/* Efecto de "golpe" al aparecer */
+.sello-container::after {
+    content: '';
+    position: absolute;
+    width: 200px;
+    height: 200px;
+    background: radial-gradient(circle, rgba(240, 192, 64, 0.3) 0%, transparent 70%);
+    animation: selloGolpe 0.6s ease-out both;
+    animation-delay: 0.5s;
+    pointer-events: none;
+}
+
+@keyframes selloGolpe {
+    0% {
+        transform: scale(0);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(2);
+        opacity: 0;
+    }
+}
+
+/* Responsive para móvil */
+@media (max-width: 480px) {
+    .sello {
+        padding: 10px 20px;
+        transform: rotate(-2deg);
+    }
+    
+    .sello-texto {
+        font-size: 0.8rem;
+        letter-spacing: 1px;
+    }
+    
+    .sello-texto:first-child {
+        font-size: 0.75rem;
+    }
+}
