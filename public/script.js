@@ -150,8 +150,18 @@ function abrirApartar(num, txt) {
     modalApartar.classList.add('is-open');
 }
 
-formApartar.onsubmit = async (e) => {
-    e.preventDefault();
+/* ============================================================
+   PROCESAR APARTADO (CON 2 OPCIONES)
+   ============================================================ */
+function procesarApartar(accion) {
+    const form = document.getElementById('form-apartar');
+    
+    // 1. Validar que los campos requeridos estén llenos
+    if (!form.checkValidity()) {
+        form.reportValidity(); // Muestra las burbujas de "Complete este campo"
+        return;
+    }
+
     const nombre = document.getElementById('nombre-ap').value.trim();
     const tel = document.getElementById('tel-ap').value.trim();
     const email = document.getElementById('email-ap').value.trim();
@@ -159,44 +169,51 @@ formApartar.onsubmit = async (e) => {
     if (nombre.length < 3) return toastMsg('Nombre muy corto', 'error');
     if (tel.replace(/\D/g, '').length < 7) return toastMsg('Teléfono inválido', 'error');
     
-    try {
-        const resp = await fetch(`${API_URL}/${numActual}`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ nombre, telefono: tel, email })
-        });
-        if (resp.status === 409) return toastMsg('Número ya tomado', 'error');
-        if (!resp.ok) throw new Error('Error');
-        
+    // 2. Guardar en la base de datos
+    fetch(`${API_URL}/${numActual}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ nombre, telefono: tel, email })
+    })
+    .then(resp => {
+        if (resp.status === 409) throw new Error('Número ya tomado');
+        if (!resp.ok) throw new Error('Error del servidor');
+        return resp.json();
+    })
+    .then(() => {
         cerrarModal('modal-apartar');
-        toastMsg('¡Apartado! Ahora realiza el pago.', 'success');
-        
-        // Enviar mensaje de WhatsApp automáticamente
-        const numeroLimpio = tel.replace(/\D/g, '');
-        const numeroWhatsApp = numeroLimpio.startsWith('57') ? numeroLimpio : '57' + numeroLimpio;
-        const numeroFormateado = String(numActual).padStart(2, '0');
-        
-        const mensaje = `¡Hola ${nombre}! 🏝️\n\n` +
-            `✅ Has apartado el número *${numeroFormateado}* en la rifa *El Oasis Secreto*.\n\n` +
-            `💰 Valor: $20.000 COP\n` +
-            `📲 Paga por Nequi al: 3045684337\n` +
-            `👤 Nombre: Diana Walteros\n\n` +
-            `⚠️ *Tienes hasta el 5 de diciembre para cancelar tu número y participar en la rifa del Oasis Secreto.*\n\n` +
-            `🎰 El ganador saldrá con los últimos 2 dígitos de la Lotería de Boyacá.\n\n` +
-            `¡Mucha suerte! 🍀`;
-        
-        const urlWhatsApp = `https://wa.me/${numeroWhatsApp}?text=${encodeURIComponent(mensaje)}`;
-        
-        setTimeout(() => {
-            window.open(urlWhatsApp, '_blank');
-            abrirPago(numActual);
-        }, 1000);
-        
+        toastMsg('¡Datos guardados exitosamente!', 'success');
         cargarTodo();
-    } catch (err) {
-        toastMsg('Error al apartar', 'error');
-    }
-};
+        
+        // 3. Ejecutar la acción elegida por el usuario
+        if (accion === 'whatsapp') {
+            const numeroLimpio = tel.replace(/\D/g, '');
+            const numeroWhatsApp = numeroLimpio.startsWith('57') ? numeroLimpio : '57' + numeroLimpio;
+            const numeroFormateado = String(numActual).padStart(2, '0');
+            
+            const mensaje = `¡Hola ${nombre}! 🏝️\n\n` +
+                `✅ Has apartado el número *${numeroFormateado}* en la rifa *El Oasis Secreto*.\n\n` +
+                `💰 Valor: $20.000 COP\n` +
+                `📲 Paga por Nequi al: 3045684337\n` +
+                `👤 Nombre: Diana Walteros\n\n` +
+                `⚠️ *Tienes hasta el 5 de diciembre para cancelar tu número y participar en la rifa del Oasis Secreto.*\n\n` +
+                `🎰 El ganador saldrá con los últimos 2 dígitos de la Lotería de Boyacá.\n\n` +
+                `¡Mucha suerte! 🍀`;
+            
+            const urlWhatsApp = `https://wa.me/${numeroWhatsApp}?text=${encodeURIComponent(mensaje)}`;
+            
+            // Pequeña pausa para que el usuario vea el toast de éxito antes de que cambie la pantalla
+            setTimeout(() => window.open(urlWhatsApp, '_blank'), 800);
+            
+        } else if (accion === 'pagar') {
+            // Ir directo a la pantalla de subir comprobante
+            setTimeout(() => abrirPago(numActual), 800);
+        }
+    })
+    .catch(err => {
+        toastMsg(err.message === 'Número ya tomado' ? '❌ Número ya tomado' : 'Error al guardar', 'error');
+    });
+}
 
 function abrirPago(num) {
     numPago.textContent = String(num).padStart(2, '0');

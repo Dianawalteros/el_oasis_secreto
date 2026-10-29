@@ -2096,3 +2096,54 @@ HEADER RESPONSIVE PARA CELULARES
         min-width: 70px;
     }
 }
+/* ============================================================
+BOTONES DE ACCIÓN EN MODAL APARTAR
+============================================================ */
+.modal-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 8px;
+}
+
+.btn-whatsapp {
+    background: #25D366; /* Color oficial de WhatsApp */
+    color: white;
+    border: none;
+    padding: 14px 20px;
+    border-radius: 12px;
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.btn-whatsapp:hover {
+    background: #128C7E;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(37, 211, 102, 0.4);
+}
+
+.btn-submit {
+    /* Tu estilo actual del botón submit se mantiene */
+    background: var(--accent-yellow);
+    color: var(--text-dark);
+    border: none;
+    padding: 14px 20px;
+    border-radius: 12px;
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-submit:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(240, 192, 64, 0.4);
+}
