@@ -176,13 +176,14 @@ APP CONTAINER
 MODAL: APARTAR NÚMERO
 ============================================================ -->
 <!-- MODAL APARTAR -->
+<!-- MODAL APARTAR -->
 <div class="modal-overlay" id="modal-apartar">
     <div class="modal-content">
         <button class="modal-close" onclick="cerrarModal('modal-apartar')">✕</button>
         <div class="modal-title">📋 ¡Oasis <span id="num-apartar">00</span>!</div>
         <div class="modal-subtitle">Completa tus datos para continuar</div>
         
-        <form id="form-apartar">
+        <form id="form-apartar" onsubmit="event.preventDefault();">
             <div class="form-group">
                 <label>📛 Nombre</label>
                 <input type="text" id="nombre-ap" placeholder="Tu nombre completo" required>
@@ -196,7 +197,7 @@ MODAL: APARTAR NÚMERO
                 <input type="email" id="email-ap" placeholder="tu@email.com">
             </div>
             
-            <!-- DOS BOTONES DE ACCIÓN -->
+            <!-- BOTONES DE ACCIÓN DIRECTA -->
             <div class="modal-actions">
                 <button type="button" class="btn-whatsapp" onclick="procesarApartar('whatsapp')">
                     📱 Apartar y recibir info

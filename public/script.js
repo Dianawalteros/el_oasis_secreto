@@ -153,39 +153,35 @@ function abrirApartar(num, txt) {
 /* ============================================================
    PROCESAR APARTADO (CON 2 OPCIONES)
    ============================================================ */
-function procesarApartar(accion) {
-    const form = document.getElementById('form-apartar');
-    
-    // 1. Validar que los campos requeridos estén llenos
-    if (!form.checkValidity()) {
-        form.reportValidity(); // Muestra las burbujas de "Complete este campo"
-        return;
-    }
-
+/* ============================================================
+   PROCESAR APARTADO (AUTOMÁTICO AL HACER CLIC)
+   ============================================================ */
+async function procesarApartar(accion) {
     const nombre = document.getElementById('nombre-ap').value.trim();
     const tel = document.getElementById('tel-ap').value.trim();
     const email = document.getElementById('email-ap').value.trim();
     
+    // Validaciones rápidas
     if (nombre.length < 3) return toastMsg('Nombre muy corto', 'error');
     if (tel.replace(/\D/g, '').length < 7) return toastMsg('Teléfono inválido', 'error');
     
-    // 2. Guardar en la base de datos
-    fetch(`${API_URL}/${numActual}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ nombre, telefono: tel, email })
-    })
-    .then(resp => {
-        if (resp.status === 409) throw new Error('Número ya tomado');
-        if (!resp.ok) throw new Error('Error del servidor');
-        return resp.json();
-    })
-    .then(() => {
+    try {
+        // 1. Guardar en la base de datos
+        const resp = await fetch(`${API_URL}/${numActual}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ nombre, telefono: tel, email })
+        });
+        
+        if (resp.status === 409) return toastMsg('Número ya tomado', 'error');
+        if (!resp.ok) throw new Error('Error');
+        
+        // 2. Cerrar modal y mostrar éxito
         cerrarModal('modal-apartar');
-        toastMsg('¡Datos guardados exitosamente!', 'success');
+        toastMsg('¡Apartado con éxito!', 'success');
         cargarTodo();
         
-        // 3. Ejecutar la acción elegida por el usuario
+        // 3. Ejecutar la acción automáticamente
         if (accion === 'whatsapp') {
             const numeroLimpio = tel.replace(/\D/g, '');
             const numeroWhatsApp = numeroLimpio.startsWith('57') ? numeroLimpio : '57' + numeroLimpio;
@@ -202,17 +198,17 @@ function procesarApartar(accion) {
             
             const urlWhatsApp = `https://wa.me/${numeroWhatsApp}?text=${encodeURIComponent(mensaje)}`;
             
-            // Pequeña pausa para que el usuario vea el toast de éxito antes de que cambie la pantalla
-            setTimeout(() => window.open(urlWhatsApp, '_blank'), 800);
+            // Esto abre WhatsApp automáticamente sin pedir Enter ni bloquear popups
+            window.location.href = urlWhatsApp; 
             
         } else if (accion === 'pagar') {
-            // Ir directo a la pantalla de subir comprobante
-            setTimeout(() => abrirPago(numActual), 800);
+            // Ir directo a la pantalla de comprobante
+            setTimeout(() => abrirPago(numActual), 500);
         }
-    })
-    .catch(err => {
-        toastMsg(err.message === 'Número ya tomado' ? '❌ Número ya tomado' : 'Error al guardar', 'error');
-    });
+        
+    } catch (err) {
+        toastMsg('Error al apartar', 'error');
+    }
 }
 
 function abrirPago(num) {
