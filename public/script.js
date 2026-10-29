@@ -170,7 +170,28 @@ formApartar.onsubmit = async (e) => {
         
         cerrarModal('modal-apartar');
         toastMsg('¡Apartado! Ahora realiza el pago.', 'success');
-        setTimeout(() => abrirPago(numActual), 500);
+        
+        // Enviar mensaje de WhatsApp automáticamente
+        const numeroLimpio = tel.replace(/\D/g, '');
+        const numeroWhatsApp = numeroLimpio.startsWith('57') ? numeroLimpio : '57' + numeroLimpio;
+        const numeroFormateado = String(numActual).padStart(2, '0');
+        
+        const mensaje = `¡Hola ${nombre}! 🏝️\n\n` +
+            `✅ Has apartado el número *${numeroFormateado}* en la rifa *El Oasis Secreto*.\n\n` +
+            `💰 Valor: $20.000 COP\n` +
+            `📲 Paga por Nequi al: 3045684337\n` +
+            `👤 Nombre: Diana Walteros\n\n` +
+            `⚠️ *Tienes hasta el 5 de diciembre para cancelar tu número y participar en la rifa del Oasis Secreto.*\n\n` +
+            `🎰 El ganador saldrá con los últimos 2 dígitos de la Lotería de Boyacá.\n\n` +
+            `¡Mucha suerte! 🍀`;
+        
+        const urlWhatsApp = `https://wa.me/${numeroWhatsApp}?text=${encodeURIComponent(mensaje)}`;
+        
+        setTimeout(() => {
+            window.open(urlWhatsApp, '_blank');
+            abrirPago(numActual);
+        }, 1000);
+        
         cargarTodo();
     } catch (err) {
         toastMsg('Error al apartar', 'error');
