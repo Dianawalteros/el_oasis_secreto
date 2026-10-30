@@ -311,6 +311,72 @@ function verComp(num) {
 /* ============================================================
    ENVIAR RECORDATORIO DE PAGO (ADMIN)
    ============================================================ */
+/* ============================================================
+   ADMIN
+   ============================================================ */
+function cargarAdmin() {
+    const total = Object.keys(registros).length;
+    const pagados = Object.values(registros).filter(r => r.pagado).length;
+    const pendientes = total - pagados;
+    
+    document.getElementById('stat-total').textContent = total;
+    document.getElementById('stat-pagados').textContent = pagados;
+    document.getElementById('stat-pendientes').textContent = pendientes;
+    document.getElementById('stat-recaudado').textContent = (pagados * PRECIO).toLocaleString();
+    
+    const tbody = document.getElementById('tabla-body');
+    tbody.innerHTML = '';
+    
+    if (total === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" class="loading">Sin registros</td></tr>';
+        return;
+    }
+    
+    Object.entries(registros).forEach(([num, r]) => {
+        const tr = document.createElement('tr');
+        const estado = r.pagado ? 
+            '<span class="estado estado-pagado">✓ Pagado</span>' : 
+            '<span class="estado estado-pendiente">⏳ Pendiente</span>';
+        
+        const btnVer = r.comprobante ? 
+            `<button class="btn-ver" onclick="verComp(${num})">👁 Ver</button>` : 
+            '<span style="color:#999">Sin comprobante</span>';
+        
+        // Botón para enviar recordatorio por WhatsApp (siempre visible)
+        const btnRecordatorio = `<button class="btn-whatsapp-admin" onclick="enviarRecordatorio(${num})" title="Enviar recordatorio de pago">📱</button>`;
+        
+        // Botón de eliminar
+        let btnAcc = btnRecordatorio + `<button class="btn-eliminar" onclick="eliminar(${num})" title="Eliminar">🗑</button>`;
+        
+        // Si NO está pagado pero SÍ tiene comprobante, agregamos el botón de aprobar
+        if (!r.pagado && r.comprobante) {
+            btnAcc = `<button class="btn-aprobar" onclick="aprobar(${num})" title="Aprobar">✓</button>` + btnAcc;
+        }
+        
+        tr.innerHTML = `
+            <td data-label="#"><strong>${String(num).padStart(2,'0')}</strong></td>
+            <td data-label="NOMBRE">${r.nombre}</td>
+            <td data-label="TELÉFONO">${r.telefono}</td>
+            <td data-label="ESTADO">${estado}</td>
+            <td data-label="COMPROBANTE">${btnVer}</td>
+            <td data-label="ACCIONES">${btnAcc}</td>
+        `;
+        tbody.appendChild(tr);
+    });
+}
+
+function verComp(num) {
+    const r = registros[num];
+    if (!r || !r.comprobante) return;
+    document.getElementById('comp-num').textContent = String(num).padStart(2,'0');
+    document.getElementById('comp-img').src = r.comprobante;
+    document.getElementById('comp-info').innerHTML = `<strong>${r.nombre}</strong> - ${r.telefono}<br><small>${new Date(r.fecha).toLocaleString()}</small>`;
+    modalComp.classList.add('is-open');
+}
+
+/* ============================================================
+   ENVIAR RECORDATORIO DE PAGO (ADMIN)
+   ============================================================ */
 function enviarRecordatorio(num) {
     const r = registros[num];
     if (!r || !r.telefono) return toastMsg('No hay teléfono registrado', 'error');
@@ -391,7 +457,6 @@ async function reiniciarRifa() {
         cargarTodo();
     } catch (err) { toastMsg('Error', 'error'); }
 }
-
 
 /* ============================================================
    UTILIDADES
