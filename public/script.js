@@ -140,8 +140,8 @@ function actualizarContador() {
     contador.textContent = disp + ' / 99';
 }
 
-/* ============================================================
-   APARTAR Y PAGO
+/*  ============================================================
+   APARTAR Y PAGO (USUARIO)
    ============================================================ */
 function abrirApartar(num, txt) {
     numActual = num;
@@ -150,15 +150,6 @@ function abrirApartar(num, txt) {
     modalApartar.classList.add('is-open');
 }
 
-/* ============================================================
-   PROCESAR APARTADO (CON 2 OPCIONES)
-   ============================================================ */
-/* ============================================================
-   PROCESAR APARTADO (AUTOMÁTICO AL HACER CLIC)
-   ============================================================ */
-/* ============================================================
-   PROCESAR APARTADO (SOLO PARA EL USUARIO - SIN WHATSAPP)
-   ============================================================ */
 async function procesarApartar(accion) {
     const nombre = document.getElementById('nombre-ap').value.trim();
     const tel = document.getElementById('tel-ap').value.trim();
@@ -185,7 +176,7 @@ async function procesarApartar(accion) {
         cargarTodo();
         
         // 3. Mostrar el modal de pago para que el usuario vea los datos de Nequi
-        // (Aquí NO hay ningún window.open, solo se muestra la pantalla de pago)
+        // (SIN abrir WhatsApp automáticamente)
         setTimeout(() => abrirPago(numActual), 800);
         
     } catch (err) {
@@ -225,10 +216,7 @@ formPago.onsubmit = async (e) => {
 };
 
 /* ============================================================
-   ADMIN (CON CORRECCIÓN DEL BOTÓN ELIMINAR)
-   ============================================================ */
-/* ============================================================
-   ADMIN
+   FUNCIONES DEL ADMINISTRADOR
    ============================================================ */
 function cargarAdmin() {
     const total = Object.keys(registros).length;
@@ -258,15 +246,15 @@ function cargarAdmin() {
             `<button class="btn-ver" onclick="verComp(${num})">👁 Ver</button>` : 
             '<span style="color:#999">Sin comprobante</span>';
         
-        // Botón para enviar recordatorio por WhatsApp (siempre visible)
+        // 1. Botón de Recordatorio (Celular)
         const btnRecordatorio = `<button class="btn-whatsapp-admin" onclick="enviarRecordatorio(${num})" title="Enviar recordatorio de pago">📱</button>`;
         
-        // Botón de eliminar
+        // 2. Botón de Eliminar (Basurero)
         let btnAcc = btnRecordatorio + `<button class="btn-eliminar" onclick="eliminar(${num})" title="Eliminar">🗑</button>`;
         
-        // Si NO está pagado pero SÍ tiene comprobante, agregamos el botón de aprobar
+        // 3. Botón de Aprobar (Chulito Verde) - SOLO si tiene comprobante y NO está pagado
         if (!r.pagado && r.comprobante) {
-            btnAcc = `<button class="btn-aprobar" onclick="aprobar(${num})" title="Aprobar">✓</button>` + btnAcc;
+            btnAcc = `<button class="btn-aprobar" onclick="aprobar(${num})" title="Aprobar pago y enviar confirmación">✓</button>` + btnAcc;
         }
         
         tr.innerHTML = `
@@ -290,75 +278,7 @@ function verComp(num) {
     modalComp.classList.add('is-open');
 }
 
-/* ============================================================
-   ENVIAR RECORDATORIO DE PAGO (ADMIN)
-   ============================================================ */
-/* ============================================================
-   ADMIN
-   ============================================================ */
-function cargarAdmin() {
-    const total = Object.keys(registros).length;
-    const pagados = Object.values(registros).filter(r => r.pagado).length;
-    const pendientes = total - pagados;
-    
-    document.getElementById('stat-total').textContent = total;
-    document.getElementById('stat-pagados').textContent = pagados;
-    document.getElementById('stat-pendientes').textContent = pendientes;
-    document.getElementById('stat-recaudado').textContent = (pagados * PRECIO).toLocaleString();
-    
-    const tbody = document.getElementById('tabla-body');
-    tbody.innerHTML = '';
-    
-    if (total === 0) {
-        tbody.innerHTML = '<tr><td colspan="6" class="loading">Sin registros</td></tr>';
-        return;
-    }
-    
-    Object.entries(registros).forEach(([num, r]) => {
-        const tr = document.createElement('tr');
-        const estado = r.pagado ? 
-            '<span class="estado estado-pagado">✓ Pagado</span>' : 
-            '<span class="estado estado-pendiente">⏳ Pendiente</span>';
-        
-        const btnVer = r.comprobante ? 
-            `<button class="btn-ver" onclick="verComp(${num})">👁 Ver</button>` : 
-            '<span style="color:#999">Sin comprobante</span>';
-        
-        // Botón para enviar recordatorio por WhatsApp (siempre visible)
-        const btnRecordatorio = `<button class="btn-whatsapp-admin" onclick="enviarRecordatorio(${num})" title="Enviar recordatorio de pago">📱</button>`;
-        
-        // Botón de eliminar
-        let btnAcc = btnRecordatorio + `<button class="btn-eliminar" onclick="eliminar(${num})" title="Eliminar">🗑</button>`;
-        
-        // Si NO está pagado pero SÍ tiene comprobante, agregamos el botón de aprobar
-        if (!r.pagado && r.comprobante) {
-            btnAcc = `<button class="btn-aprobar" onclick="aprobar(${num})" title="Aprobar">✓</button>` + btnAcc;
-        }
-        
-        tr.innerHTML = `
-            <td data-label="#"><strong>${String(num).padStart(2,'0')}</strong></td>
-            <td data-label="NOMBRE">${r.nombre}</td>
-            <td data-label="TELÉFONO">${r.telefono}</td>
-            <td data-label="ESTADO">${estado}</td>
-            <td data-label="COMPROBANTE">${btnVer}</td>
-            <td data-label="ACCIONES">${btnAcc}</td>
-        `;
-        tbody.appendChild(tr);
-    });
-}
-
-function verComp(num) {
-    const r = registros[num];
-    if (!r || !r.comprobante) return;
-    document.getElementById('comp-num').textContent = String(num).padStart(2,'0');
-    document.getElementById('comp-img').src = r.comprobante;
-    document.getElementById('comp-info').innerHTML = `<strong>${r.nombre}</strong> - ${r.telefono}<br><small>${new Date(r.fecha).toLocaleString()}</small>`;
-    modalComp.classList.add('is-open');
-}
-
-/* ============================================================
-   ENVIAR RECORDATORIO DE PAGO (ADMIN)
-   ============================================================ */
+/* --- ENVIAR RECORDATORIO (Botón 📱) --- */
 function enviarRecordatorio(num) {
     const r = registros[num];
     if (!r || !r.telefono) return toastMsg('No hay teléfono registrado', 'error');
@@ -377,12 +297,11 @@ function enviarRecordatorio(num) {
         `¡Mucha suerte! 🍀`;
 
     const urlWhatsApp = `https://wa.me/${numeroWhatsApp}?text=${encodeURIComponent(mensaje)}`;
-    
-    // Abrir WhatsApp
     window.open(urlWhatsApp, '_blank');
     toastMsg('Abriendo WhatsApp para enviar recordatorio...', 'info');
 }
 
+/* --- APROBAR PAGO (Botón ✓ Chulito Verde) --- */
 async function aprobar(num) {
     if (!confirm('¿Aprobar pago del #' + String(num).padStart(2,'0') + ' y enviar mensaje de confirmación?')) return;
     
@@ -394,8 +313,8 @@ async function aprobar(num) {
         const registro = registros[num];
         
         if (registro && registro.telefono) {
-            // 3. Preparar el mensaje de WhatsApp
-            const numeroLimpio = registro.telefono.replace(/\D/g, ''); // Solo números
+            // 3. Preparar el mensaje de WhatsApp de APROBACIÓN
+            const numeroLimpio = registro.telefono.replace(/\D/g, '');
             const numeroWhatsApp = numeroLimpio.startsWith('57') ? numeroLimpio : '57' + numeroLimpio;
             
             const mensaje = `¡Hola ${registro.nombre}! 💰\n\n` +
@@ -405,14 +324,12 @@ async function aprobar(num) {
                 `🎉 ¡Ya estás participando oficialmente! Te avisaremos cuando se realice el sorteo, recuerda que gana con las dos ultimas cifras del premio mayor de la loteria de Boyaca, el 5 de diciembre 2026.\n\n` +
                 `¡Mucha suerte, y gracias por tu participación!`;
             
-            // 4. Crear el enlace de WhatsApp
+            // 4. Crear el enlace y abrir WhatsApp
             const urlWhatsApp = `https://wa.me/${numeroWhatsApp}?text=${encodeURIComponent(mensaje)}`;
-            
-            // 5. Abrir WhatsApp en nueva pestaña
             window.open(urlWhatsApp, '_blank');
         }
         
-        toastMsg('✅ Pago aprobado y mensaje enviado', 'success');
+        toastMsg('✅ Pago aprobado y mensaje de confirmación listo', 'success');
         cargarTodo();
         
     } catch (err) { 
@@ -421,6 +338,7 @@ async function aprobar(num) {
     }
 }
 
+/* --- ELIMINAR REGISTRO --- */
 async function eliminar(num) {
     if (!confirm('¿Eliminar registro #' + String(num).padStart(2,'0') + '?')) return;
     try {
@@ -430,6 +348,7 @@ async function eliminar(num) {
     } catch (err) { toastMsg('Error', 'error'); }
 }
 
+/* --- REINICIAR RIFA --- */
 async function reiniciarRifa() {
     if (!confirm('⚠️ ¿Reiniciar toda la rifa?')) return;
     if (!confirm('✋ ÚLTIMA ADVERTENCIA: ¿Continuar?')) return;
@@ -458,9 +377,10 @@ function toastMsg(msg, tipo) {
     toast.style.background = tipo === 'error' ? '#dc3545' : tipo === 'success' ? '#28a745' : '#5D3A1A';
     setTimeout(() => toast.classList.remove('is-visible'), 3000);
 }
+
 /* ============================================================
-MODAL VER PREMIO
-============================================================ */
+   MODAL VER PREMIO
+   ============================================================ */
 function abrirModalPremio() {
     const modal = document.getElementById('modal-premio');
     if (modal) {
@@ -468,7 +388,6 @@ function abrirModalPremio() {
     }
 }
 
-// Cerrar modal de premio al hacer clic fuera
 const modalPremio = document.getElementById('modal-premio');
 if (modalPremio) {
     modalPremio.onclick = (e) => {
@@ -477,6 +396,7 @@ if (modalPremio) {
         }
     };
 }
+
 // Cerrar modales al hacer clic fuera
 ['modal-apartar', 'modal-pago', 'modal-comp', 'modal-login'].forEach(id => {
     const el = document.getElementById(id);
