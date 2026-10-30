@@ -156,6 +156,9 @@ function abrirApartar(num, txt) {
 /* ============================================================
    PROCESAR APARTADO (AUTOMÁTICO AL HACER CLIC)
    ============================================================ */
+/* ============================================================
+   PROCESAR APARTADO (SOLO PARA EL USUARIO - SIN WHATSAPP)
+   ============================================================ */
 async function procesarApartar(accion) {
     const nombre = document.getElementById('nombre-ap').value.trim();
     const tel = document.getElementById('tel-ap').value.trim();
@@ -178,33 +181,12 @@ async function procesarApartar(accion) {
         
         // 2. Cerrar modal y mostrar éxito
         cerrarModal('modal-apartar');
-        toastMsg('¡Apartado con éxito!', 'success');
+        toastMsg('¡Número apartado con éxito!', 'success');
         cargarTodo();
         
-        // 3. Ejecutar la acción automáticamente
-        if (accion === 'whatsapp') {
-            const numeroLimpio = tel.replace(/\D/g, '');
-            const numeroWhatsApp = numeroLimpio.startsWith('57') ? numeroLimpio : '57' + numeroLimpio;
-            const numeroFormateado = String(numActual).padStart(2, '0');
-            
-            const mensaje = `¡Hola ${nombre}! 🏝️\n\n` +
-                `✅ Has apartado el número *${numeroFormateado}* en la rifa *El Oasis Secreto*.\n\n` +
-                `💰 Valor: $20.000 COP\n` +
-                `📲 Paga por Nequi al: 3045684337\n` +
-                `👤 Nombre: Diana Walteros\n\n` +
-                `⚠️ *Tienes hasta el 5 de diciembre para cancelar tu número y participar en la rifa del Oasis Secreto.*\n\n` +
-                `🎰 El ganador saldrá con los últimos 2 dígitos de la Lotería de Boyacá.\n\n` +
-                `¡Mucha suerte! 🍀`;
-            
-            const urlWhatsApp = `https://wa.me/${numeroWhatsApp}?text=${encodeURIComponent(mensaje)}`;
-            
-            // Esto abre WhatsApp automáticamente sin pedir Enter ni bloquear popups
-            window.location.href = urlWhatsApp; 
-            
-        } else if (accion === 'pagar') {
-            // Ir directo a la pantalla de comprobante
-            setTimeout(() => abrirPago(numActual), 500);
-        }
+        // 3. Mostrar el modal de pago para que el usuario vea los datos de Nequi
+        // (Aquí NO hay ningún window.open, solo se muestra la pantalla de pago)
+        setTimeout(() => abrirPago(numActual), 800);
         
     } catch (err) {
         toastMsg('Error al apartar', 'error');
