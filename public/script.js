@@ -291,7 +291,7 @@ function enviarRecordatorio(num) {
         `✅ Has apartado el número *${numeroFormateado}* en la rifa *El Oasis Secreto*.\n\n` +
         `💰 Valor: $20.000 COP\n` +
         `📲 Paga por Nequi al: 3045684337\n` +
-        `👤 Nombre: Leidy Gonzalez\n\n` +
+        `👤 Nombre: Diana Walteros\n\n` +
         `⚠️ *Tienes hasta el 5 de diciembre para cancelar tu número y participar en la rifa del Oasis Secreto.*\n\n` +
         `🎰 El ganador saldrá con los últimos 2 dígitos de la Lotería de Boyacá.\n\n` +
         `¡Mucha suerte! 🍀`;
