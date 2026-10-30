@@ -245,6 +245,9 @@ formPago.onsubmit = async (e) => {
 /* ============================================================
    ADMIN (CON CORRECCIÓN DEL BOTÓN ELIMINAR)
    ============================================================ */
+/* ============================================================
+   ADMIN
+   ============================================================ */
 function cargarAdmin() {
     const total = Object.keys(registros).length;
     const pagados = Object.values(registros).filter(r => r.pagado).length;
@@ -267,21 +270,31 @@ function cargarAdmin() {
         const tr = document.createElement('tr');
         const estado = r.pagado ? 
             '<span class="estado estado-pagado">✓ Pagado</span>' : 
-            '<span class="estado estado-pendiente"> Pendiente</span>';
+            '<span class="estado estado-pendiente">⏳ Pendiente</span>';
         
         const btnVer = r.comprobante ? 
             `<button class="btn-ver" onclick="verComp(${num})">👁 Ver</button>` : 
             '<span style="color:#999">Sin comprobante</span>';
         
-        // ✅ CORRECCIÓN: El botón eliminar SIEMPRE está presente
-        let btnAcc = `<button class="btn-eliminar" onclick="eliminar(${num})" title="Eliminar">🗑</button>`;
+        // Botón para enviar recordatorio por WhatsApp (siempre visible)
+        const btnRecordatorio = `<button class="btn-whatsapp-admin" onclick="enviarRecordatorio(${num})" title="Enviar recordatorio de pago">📱</button>`;
         
-        // Si NO está pagado pero SÍ tiene comprobante, agregamos el botón de aprobar ANTES del eliminar
+        // Botón de eliminar
+        let btnAcc = btnRecordatorio + `<button class="btn-eliminar" onclick="eliminar(${num})" title="Eliminar">🗑</button>`;
+        
+        // Si NO está pagado pero SÍ tiene comprobante, agregamos el botón de aprobar
         if (!r.pagado && r.comprobante) {
             btnAcc = `<button class="btn-aprobar" onclick="aprobar(${num})" title="Aprobar">✓</button>` + btnAcc;
         }
         
-        tr.innerHTML = `<td><strong>${String(num).padStart(2,'0')}</strong></td><td>${r.nombre}</td><td>${r.telefono}</td><td>${estado}</td><td>${btnVer}</td><td>${btnAcc}</td>`;
+        tr.innerHTML = `
+            <td data-label="#"><strong>${String(num).padStart(2,'0')}</strong></td>
+            <td data-label="NOMBRE">${r.nombre}</td>
+            <td data-label="TELÉFONO">${r.telefono}</td>
+            <td data-label="ESTADO">${estado}</td>
+            <td data-label="COMPROBANTE">${btnVer}</td>
+            <td data-label="ACCIONES">${btnAcc}</td>
+        `;
         tbody.appendChild(tr);
     });
 }
@@ -293,6 +306,33 @@ function verComp(num) {
     document.getElementById('comp-img').src = r.comprobante;
     document.getElementById('comp-info').innerHTML = `<strong>${r.nombre}</strong> - ${r.telefono}<br><small>${new Date(r.fecha).toLocaleString()}</small>`;
     modalComp.classList.add('is-open');
+}
+
+/* ============================================================
+   ENVIAR RECORDATORIO DE PAGO (ADMIN)
+   ============================================================ */
+function enviarRecordatorio(num) {
+    const r = registros[num];
+    if (!r || !r.telefono) return toastMsg('No hay teléfono registrado', 'error');
+
+    const numeroLimpio = r.telefono.replace(/\D/g, '');
+    const numeroWhatsApp = numeroLimpio.startsWith('57') ? numeroLimpio : '57' + numeroLimpio;
+    const numeroFormateado = String(num).padStart(2, '0');
+
+    const mensaje = `¡Hola ${r.nombre}! 🏝️\n\n` +
+        `✅ Has apartado el número *${numeroFormateado}* en la rifa *El Oasis Secreto*.\n\n` +
+        `💰 Valor: $20.000 COP\n` +
+        `📲 Paga por Nequi al: 3045684337\n` +
+        `👤 Nombre: Leidy Gonzalez\n\n` +
+        `⚠️ *Tienes hasta el 5 de diciembre para cancelar tu número y participar en la rifa del Oasis Secreto.*\n\n` +
+        `🎰 El ganador saldrá con los últimos 2 dígitos de la Lotería de Boyacá.\n\n` +
+        `¡Mucha suerte! 🍀`;
+
+    const urlWhatsApp = `https://wa.me/${numeroWhatsApp}?text=${encodeURIComponent(mensaje)}`;
+    
+    // Abrir WhatsApp
+    window.open(urlWhatsApp, '_blank');
+    toastMsg('Abriendo WhatsApp para enviar recordatorio...', 'info');
 }
 
 async function aprobar(num) {
